@@ -5,6 +5,7 @@ from subprocess import Popen, PIPE
 from hookshub.hooks.webhook import webhook
 
 import requests
+import polib
 import sys
 
 # GitHub Events
@@ -393,6 +394,35 @@ class GitHubUtil:
         except Exception as err:
             output = 'Failed to export sitecustomize path'
         return output
+
+    @staticmethod
+    def build_mo_file(dir, lang='es_ES'):
+        """
+        Build a mo file from a pofile in the designed directory path.
+         It does use the specified lang to choose the path to use.
+         Uses default localization path.
+        :param dir: Base path from which the po file must be found
+            :type: String
+        :param lang: Language to be build, used on po-file path
+            :type: String
+        :return: True if built successfully, False if errors found.
+        """
+        podir = join(
+            dir,
+            join(
+                'locales',
+                join(
+                    lang,
+                    'LC_MESSAGES'
+                )
+            )
+        )
+        try:
+            po = polib.pofile(join(podir, 'message.po'))
+            po.save_as_mofile(join(podir, 'messages.mo'))
+            return True
+        except Exception as err:
+            return False
 
     @staticmethod
     def docs_build(dir, target=None, file=None, clean=True):
