@@ -448,7 +448,10 @@ class GitHubUtil:
             output += 'to {}...'.format(target)
             command += ' -d {}'.format(target)
         if file:
-            output += ' using file config file "{}"...'.format(file)
+            # Now building only for es_ES translations, thus it must be improved
+            if not GitHubUtil.build_mo_file(dir=dir, lang='es_ES'):
+                output += ' Could not build po file into mo file!'
+            output += ' using config file "{}"...'.format(file)
             command += ' -f {}'.format(file)
         if clean:
             command += ' --clean'
