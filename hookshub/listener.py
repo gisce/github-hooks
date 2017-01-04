@@ -66,7 +66,7 @@ class HookListener(object):
         for action in hook.event_actions:
             i += 1
             if self.logger:
-                self.logger.info('{}[Running: <{0}/{1}> - {2}]\n'.format(
+                self.logger.info('{0}[Running: <{1}/{2}> - {3}]\n'.format(
                     datetime.now().strftime('[%d/%m/%Y-%H:%M:%S]'),
                     i, len(hook.event_actions), action)
                 )
@@ -86,13 +86,13 @@ class HookListener(object):
                     action, stderr
                 ))
                 if proc.returncode != 0:
-                    log = ('{}[{0}]:{1}\n[{0}]:Failed!\n'.format(
+                    log = ('{0}[{1}]:{2}\n[{1}]:Failed!\n'.format(
                         datetime.now().strftime('[%d/%m/%Y-%H:%M:%S]'),
                         action, output
                     ))
                     self.logger.error(log.replace('|', '\n'))
                     return -1, log
-                log = ('{}[{0}]:{1}\n[{0}]:Success!\n'.format(
+                log = ('{0}[{1}]:{2}\n[{1}]:Success!\n'.format(
                     datetime.now().strftime('[%d/%m/%Y-%H:%M:%S]'),
                     action, output
                 ))
