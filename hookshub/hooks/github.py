@@ -418,11 +418,11 @@ class GitHubUtil:
             )
         )
         try:
-            po = polib.pofile(join(podir, 'message.po'))
+            po = polib.pofile(join(podir, 'messages.po'))
             po.save_as_mofile(join(podir, 'messages.mo'))
-            return True
+            return True, ''
         except Exception as err:
-            return False
+            return False, err
 
     @staticmethod
     def docs_build(dir, target=None, file=None, clean=True):
