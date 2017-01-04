@@ -449,8 +449,11 @@ class GitHubUtil:
             command += ' -d {}'.format(target)
         if file:
             # Now building only for es_ES translations, thus it must be improved
-            if not GitHubUtil.build_mo_file(dir=dir, lang='es_ES'):
-                output += ' Could not build po file into mo file!'
+            b, log = GitHubUtil.build_mo_file(dir=dir, lang='es_ES')
+            if not b:
+                output += ' Could not build po file into mo file!\n{}'.format(
+                    log
+                )
             output += ' using config file "{}"...'.format(file)
             command += ' -f {}'.format(file)
         if clean:
