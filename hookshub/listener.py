@@ -5,6 +5,7 @@ from osconf import config_from_environment
 from hookshub.hooks.webhook import webhook
 from subprocess import Popen, PIPE
 from os.path import join
+from datetime import datetime
 import json
 import tempfile
 import shutil
@@ -57,12 +58,16 @@ class HookListener(object):
         i = 0
 
         if self.logger:
-            self.logger.info('Executing {} actions\n'.format(len(hook.event_actions)))
+            self.logger.info('{} Executing {} actions\n'.format(
+                datetime.now().strftime('[%d/%m/%Y-%H:%M:%S]'),
+                len(hook.event_actions))
+            )
 
         for action in hook.event_actions:
             i += 1
             if self.logger:
-                self.logger.info('[Running: <{0}/{1}> - {2}]\n'.format(
+                self.logger.info('{0}[Running: <{1}/{2}> - {3}]\n'.format(
+                    datetime.now().strftime('[%d/%m/%Y-%H:%M:%S]'),
                     i, len(hook.event_actions), action)
                 )
             args = hook.get_exe_action(action, conf)
@@ -81,12 +86,14 @@ class HookListener(object):
                     action, stderr
                 ))
                 if proc.returncode != 0:
-                    log = ('[{0}]:{1}\n[{0}]:Failed!\n'.format(
+                    log = ('{0}[{1}]:{2}\n[{1}]:Failed!\n'.format(
+                        datetime.now().strftime('[%d/%m/%Y-%H:%M:%S]'),
                         action, output
                     ))
                     self.logger.error(log.replace('|', '\n'))
                     return -1, log
-                log = ('[{0}]:{1}\n[{0}]:Success!\n'.format(
+                log = ('{0}[{1}]:{2}\n[{1}]:Success!\n'.format(
+                    datetime.now().strftime('[%d/%m/%Y-%H:%M:%S]'),
                     action, output
                 ))
                 self.logger.info(log.replace('|', '\n'))
