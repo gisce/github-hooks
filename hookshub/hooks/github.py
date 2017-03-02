@@ -5,6 +5,7 @@ from subprocess import Popen, PIPE
 from hookshub.hooks.webhook import webhook
 
 import requests
+import polib
 import sys
 
 # GitHub Events
@@ -405,6 +406,35 @@ class GitHubUtil:
         return output
 
     @staticmethod
+    def build_mo_file(dir, lang='es_ES'):
+        """
+        Build a mo file from a pofile in the designed directory path.
+         It does use the specified lang to choose the path to use.
+         Uses default localization path.
+        :param dir: Base path from which the po file must be found
+            :type: String
+        :param lang: Language to be build, used on po-file path
+            :type: String
+        :return: True if built successfully, False if errors found.
+        """
+        podir = join(
+            dir,
+            join(
+                'locales',
+                join(
+                    lang,
+                    'LC_MESSAGES'
+                )
+            )
+        )
+        try:
+            po = polib.pofile(join(podir, 'messages.po'))
+            po.save_as_mofile(join(podir, 'messages.mo'))
+            return True, ''
+        except Exception as err:
+            return False, err
+
+    @staticmethod
     def docs_build(dir, target=None, file=None, clean=True):
         """
         :param dir: Directory used to call the build. This MUST exist.
@@ -431,7 +461,13 @@ class GitHubUtil:
             output += 'to {}...'.format(target)
             command += ' -d {}'.format(target)
         if file:
-            output += ' using file config file "{}"...'.format(file)
+            # Now building only for es_ES translations, thus it must be improved
+            b, log = GitHubUtil.build_mo_file(dir=dir, lang='es_ES')
+            if not b:
+                output += ' Could not build po file into mo file!\n{}'.format(
+                    log
+                )
+            output += ' using config file "{}"...'.format(file)
             command += ' -f {}'.format(file)
         if clean:
             command += ' --clean'
